@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <h1>Schools and Comments</h1>
+    <h2>Welcome, {{ request.session.full_name }}.</h2>
+    <h2>Add a new school!</h2>
+    <form name="add" action="add" method="POST">
+      {% csrf_token %}
+      School name: <input type="text" name="school_name" /><br />
+      School city: <input type="text" name="city" /><br  />
+      <input type="submit" value="Add" />
+    </form>
+    <ul>
+    {% for school in schools %}
+        <li>
+          ID: {{ school.id }}<br />
+          School: {{ school.school_name }}<br />
+          City: {{ school.city }}<br />
+          Created: {{ school.created_at }}<br />
+          {% for comment in school.comments_set.all %}
+            {% if comment in school.comments_set.all %}
+              <blockquote>
+                {{ comment.name }} commented:
+                {{ comment.comment }}<br />
+                Commented at {{ comment.created_at }}
+              </blockquote>
+            {% endif %}
+          {% endfor %}
+          <form action="comment/{{ school.id }}" method="POST">
+            {% csrf_token %}
+            Comment on this school: <input type="text" name="comment" />
+            <input type="submit" value="Submit" />
+          </form>
+      </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
